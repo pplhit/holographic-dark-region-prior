@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hdrp-cgh"
+version = "0.1.0"
+description = "Holographic Dark-Region Prior for neural and iterative computer-generated holography"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Nanxing Chen"}]
+dependencies = [
+  "torch>=2.1",
+  "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+demo = ["matplotlib>=3.7", "Pillow>=10.0", "torchvision>=0.16"]
+dev = ["pytest>=8.0", "ruff>=0.6", "matplotlib>=3.7", "Pillow>=10.0", "torchvision>=0.16"]
+
+[tool.setuptools.packages.find]
+include = ["hdrp_cgh*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
