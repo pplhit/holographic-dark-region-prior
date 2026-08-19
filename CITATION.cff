@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+title: Holographic Dark-Region Prior (HDRP)
+message: If you use this research code, please cite the associated project or paper once available.
+type: software
+authors:
+  - family-names: Chen
+    given-names: Nanxing
+version: 0.1.0
+date-released: 2026-08-19
+license: MIT
