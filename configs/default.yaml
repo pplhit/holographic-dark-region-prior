@@ -1,0 +1,18 @@
+# Holographic Dark-Region Prior (HDRP)
+hdrp:
+  scales: [3, 7, 15]
+  scale_weights: [1.0, 1.0, 1.0]
+  temperature: 0.02
+  use_softmin: true
+  normalize_intensity: true
+  weight_dark_consistency: 1.0
+  weight_background_leakage: 0.5
+  weight_excess_floor: 0.25
+  excess_margin: 0.0
+  dark_threshold: 0.05
+  mask_softness: 0.01
+  weight_depth_crosstalk: 0.0
+
+training:
+  weight_l1: 1.0
+  weight_hdrp: 0.1
