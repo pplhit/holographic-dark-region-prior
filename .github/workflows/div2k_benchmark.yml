@@ -32,14 +32,19 @@ jobs:
           wget -q --show-progress https://data.vision.ee.ethz.ch/cvl/DIV2K/DIV2K_train_HR.zip -O data/div2k/DIV2K_train_HR.zip
           wget -q --show-progress https://data.vision.ee.ethz.ch/cvl/DIV2K/DIV2K_valid_HR.zip -O data/div2k/DIV2K_valid_HR.zip
       - name: Run 10-epoch benchmark
+        id: benchmark
+        continue-on-error: true
         run: |
+          mkdir -p results/div2k_10epoch
+          set -o pipefail
           python experiments/div2k_benchmark.py \
             --data-root data/div2k \
             --output results/div2k_10epoch \
             --epochs 10 \
             --crop-size 64 \
-            --batch-size 32
-      - name: Upload benchmark results
+            --batch-size 32 2>&1 | tee results/div2k_10epoch/benchmark.log
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+      - name: Upload benchmark results and logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -47,3 +52,6 @@ jobs:
           path: results/div2k_10epoch
           if-no-files-found: error
           retention-days: 30
+      - name: Fail if benchmark failed
+        if: steps.benchmark.outputs.exit_code != '0'
+        run: exit 1
