@@ -1,0 +1,44 @@
+name: DIV2K HDRP benchmark
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'experiments/div2k_benchmark.py'
+      - '.github/workflows/div2k_benchmark.yml'
+      - 'hdrp_cgh/**'
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+      - name: Download official DIV2K HR data
+        run: |
+          mkdir -p data/div2k
+          wget -q --show-progress https://data.vision.ee.ethz.ch/cvl/DIV2K/DIV2K_train_HR.zip -O data/div2k/DIV2K_train_HR.zip
+          wget -q --show-progress https://data.vision.ee.ethz.ch/cvl/DIV2K/DIV2K_valid_HR.zip -O data/div2k/DIV2K_valid_HR.zip
+      - name: Run 10-epoch benchmark
+        run: |
+          python experiments/div2k_benchmark.py \
+            --data-root data/div2k \
+            --output results/div2k_10epoch \
+            --epochs 10 \
+            --crop-size 64 \
+            --batch-size 32
+      - name: Upload benchmark results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: div2k-hdrp-10epoch-results
+          path: results/div2k_10epoch
+          if-no-files-found: error
+          retention-days: 30
