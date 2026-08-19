@@ -26,11 +26,18 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e .
-      - name: Download official DIV2K HR data
+      - name: Download and unpack official DIV2K HR data sequentially
         run: |
           mkdir -p data/div2k
+          df -h .
           wget -q --show-progress https://data.vision.ee.ethz.ch/cvl/DIV2K/DIV2K_train_HR.zip -O data/div2k/DIV2K_train_HR.zip
+          unzip -q data/div2k/DIV2K_train_HR.zip -d data/div2k
+          rm data/div2k/DIV2K_train_HR.zip
+          df -h .
           wget -q --show-progress https://data.vision.ee.ethz.ch/cvl/DIV2K/DIV2K_valid_HR.zip -O data/div2k/DIV2K_valid_HR.zip
+          unzip -q data/div2k/DIV2K_valid_HR.zip -d data/div2k
+          rm data/div2k/DIV2K_valid_HR.zip
+          df -h .
       - name: Run 10-epoch benchmark
         id: benchmark
         continue-on-error: true
